@@ -71,14 +71,12 @@ class Resource(MethodView):
                                  e.status,
                                  headers)
         except Exception as e:
-            if 'API_PROPOGATE_UNCAUGHT_EXCEPTIONS' in current_app.config:
-                if current_app.config['API_PROPOGATE_UNCAUGHT_EXCEPTIONS'] is True:
-                    raise
+            if current_app.config.get('API_PROPOGATE_UNCAUGHT_EXCEPTIONS') == True:
+                raise
             if current_app.config['DEBUG'] is True:
                 raise e
-            if 'PROPOGATE_ERROR' in current_app.config:
-                if current_app.config['PROPOGATE_ERROR'] is True:
-                    exc = JsonApiException({'pointer': ''}, str(e))
+            if current_app.config.get('PROPOGATE_ERROR') == True:
+                exc = JsonApiException({'pointer': ''}, str(e))
             else:
                 exc = JsonApiException({'pointer': ''}, 'Unknown error')
             return make_response(json.dumps(jsonapi_errors([exc.to_dict()])),
