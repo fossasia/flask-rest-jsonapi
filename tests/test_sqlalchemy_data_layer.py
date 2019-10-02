@@ -23,6 +23,11 @@ import flask_rest_jsonapi.decorators
 import flask_rest_jsonapi.resource
 import flask_rest_jsonapi.schema
 
+@pytest.fixture(autouse=True)
+def flask_app(monkeypatch):
+    app = type('app', (object,), dict(config=dict(DEBUG=True)))
+    monkeypatch.setattr(flask_rest_jsonapi.data_layers.alchemy, 'current_app', app)
+
 
 @pytest.fixture(scope="module")
 def base():
@@ -901,7 +906,7 @@ def test_sqlalchemy_data_layer_without_model(session, person_list):
         SqlalchemyDataLayer(dict(session=session, resource=person_list))
 
 
-def test_sqlalchemy_data_layer_create_object_error(session, person_model, person_list):
+def test_sqlalchemy_data_layer_create_object_error(session, person_model, person_list, monkeypatch):
     with pytest.raises(JsonApiException):
         dl = SqlalchemyDataLayer(dict(session=session, model=person_model, resource=person_list))
         dl.create_object(dict(), dict())

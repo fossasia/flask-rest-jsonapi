@@ -43,7 +43,7 @@ class SqlalchemyDataLayer(BaseDataLayer):
             self.session.commit()
         except Exception as e:
             self.session.rollback()
-            if current_app.config['PROPOGATE_ERROR'] is True:
+            if current_app.config.get('PROPOGATE_ERROR') == True:
                 raise JsonApiException({'pointer': '/data'}, "Object creation error: " + str(e))
             else:
                 raise JsonApiException({'pointer': '/data'}, "Object creation error")
@@ -136,7 +136,7 @@ class SqlalchemyDataLayer(BaseDataLayer):
             self.session.commit()
         except Exception as e:
             self.session.rollback()
-            if current_app.config['PROPOGATE_ERROR'] is True:
+            if current_app.config.get('PROPOGATE_ERROR') == True:
                 raise JsonApiException({'pointer': '/data'}, "Update object error: " + str(e))
             else:
                 raise JsonApiException({'pointer': '/data'}, "Update object error")
@@ -162,7 +162,7 @@ class SqlalchemyDataLayer(BaseDataLayer):
             self.session.commit()
         except Exception as e:
             self.session.rollback()
-            if current_app.config['PROPOGATE_ERROR'] is True:
+            if current_app.config.get('PROPOGATE_ERROR') == True:
                 raise JsonApiException('', "Delete object error: " + str(e))
             else:
                 raise JsonApiException('', "Delete object error")
@@ -219,7 +219,7 @@ class SqlalchemyDataLayer(BaseDataLayer):
             self.session.commit()
         except Exception as e:
             self.session.rollback()
-            if current_app.config['PROPOGATE_ERROR'] is True:
+            if current_app.config.get('PROPOGATE_ERROR') == True:
                 raise JsonApiException('', "Create relationship error: " + str(e))
             else:
                 raise JsonApiException('', "Create relationship error")
@@ -317,7 +317,7 @@ class SqlalchemyDataLayer(BaseDataLayer):
             self.session.commit()
         except Exception as e:
             self.session.rollback()
-            if current_app.config['PROPOGATE_ERROR'] is True:
+            if current_app.config.get('PROPOGATE_ERROR') == True:
                 raise JsonApiException('', "Update relationship error: " + str(e))
             else:
                 raise JsonApiException('', "Update relationship error")
@@ -366,7 +366,7 @@ class SqlalchemyDataLayer(BaseDataLayer):
             self.session.commit()
         except Exception as e:
             self.session.rollback()
-            if current_app.config['PROPOGATE_ERROR'] is True:
+            if current_app.config.get('PROPOGATE_ERROR') == True:
                 raise JsonApiException('', "Delete relationship error: " + str(e))
             else:
                 raise JsonApiException('', "Delete relationship error")
