@@ -27,6 +27,8 @@ import flask_rest_jsonapi.schema
 def flask_app(monkeypatch):
     app = type('app', (object,), dict(config=dict(DEBUG=True)))
     monkeypatch.setattr(flask_rest_jsonapi.data_layers.alchemy, 'current_app', app)
+    monkeypatch.setattr(flask_rest_jsonapi.data_layers.filtering.alchemy, 'current_app', app) # test Node
+    monkeypatch.setattr(flask_rest_jsonapi.querystring, 'current_app', app) # test querystring
 
 
 @pytest.fixture(scope="module")

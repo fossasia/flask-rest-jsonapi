@@ -541,7 +541,7 @@ class ResourceRelationship(with_metaclass(ResourceMeta, Resource)):
         """Get useful data for relationship management
         """
         relationship_field = request.path.split('/')[-1]
-        if current_app.config['DASHERIZE_API'] is True:
+        if current_app.config.get('DASHERIZE_API') == True:
             relationship_field = relationship_field.replace('-', '_')
 
         if relationship_field not in get_relationships(self.schema).values():

@@ -65,7 +65,7 @@ class Node(object):
         if '__' in name:
             name = name.split('__')[0]
 
-        if current_app.config['DASHERIZE_API'] is True:
+        if current_app.config.get('DASHERIZE_API') == True:
             name = name.replace('-', '_')
 
         if name not in self.schema._declared_fields:
