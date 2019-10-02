@@ -110,7 +110,7 @@ class Resource(MethodView):
             resp = make_response(json.dumps(data), status_code, headers)
 
         # ETag Handling
-        if current_app.config['ETAG'] is True:
+        if current_app.config.get('ETAG') == True:
             etag = hashlib.sha1(resp.get_data()).hexdigest()
             resp.headers['ETag'] = etag
 
@@ -130,7 +130,7 @@ class Resource(MethodView):
                     return make_response(json.dumps(jsonapi_errors([exc.to_dict()])),
                                          exc.status,
                                          headers)
-            return resp
+        return resp
 
 
 class ResourceList(with_metaclass(ResourceMeta, Resource)):
