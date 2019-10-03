@@ -829,7 +829,7 @@ def test_get_list_invalid_sort(client, register_routes):
 def test_get_detail_object_not_found(client, register_routes):
     with client:
         response = client.get('/persons/3', content_type='application/vnd.api+json')
-        assert response.status_code == 200
+        assert response.status_code == 404
 
 
 def test_post_relationship_related_object_not_found(client, register_routes, person):

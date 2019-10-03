@@ -69,7 +69,7 @@ class SqlalchemyDataLayer(BaseDataLayer):
         url_field = getattr(self, 'url_field', 'id')
         filter_value = view_kwargs[url_field]
         try:
-            if 'deleted_at' not in self.resource.schema._declared_fields or get_trashed or current_app.config['SOFT_DELETE'] is False:
+            if not getattr(self, 'resource', None) or 'deleted_at' not in self.resource.schema._declared_fields or get_trashed or current_app.config.get('SOFT_DELETE') != True:
                 obj = self.session.query(self.model).filter(filter_field == filter_value).one()
             else:
                 obj = self.session.query(self.model).filter(filter_field == filter_value).filter_by(deleted_at=None).one()
