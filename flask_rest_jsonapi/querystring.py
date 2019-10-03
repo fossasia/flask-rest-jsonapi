@@ -127,7 +127,7 @@ class QueryStringManager(object):
         result = self._get_key_values('fields')
         for key, value in result.items():
             if not isinstance(value, list):
-                if current_app.config['DASHERIZE_API'] is True:
+                if current_app.config.get('DASHERIZE_API') == True:
                     result[key] = [value.replace('-', '_')]
                 else:
                     result[key] = [value]
@@ -150,7 +150,7 @@ class QueryStringManager(object):
         if self.qs.get('sort'):
             sorting_results = []
             for sort_field in self.qs['sort'].split(','):
-                if current_app.config['DASHERIZE_API'] is True:
+                if current_app.config.get('DASHERIZE_API') == True:
                     field = sort_field[0].replace('-', '') + sort_field[1:].replace('-', '_')
                 else:
                     field = sort_field[0].replace('-', '') + sort_field[1:]
@@ -175,7 +175,7 @@ class QueryStringManager(object):
         if include_param:
             param_results = []
             for param in include_param.split(','):
-                if current_app.config['DASHERIZE_API'] is True:
+                if current_app.config.get('DASHERIZE_API') == True:
                     param = param.replace('-', '_')
                 param_results.append(param)
             return param_results

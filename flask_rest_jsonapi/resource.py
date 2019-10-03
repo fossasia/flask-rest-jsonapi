@@ -71,14 +71,12 @@ class Resource(MethodView):
                                  e.status,
                                  headers)
         except Exception as e:
-            if 'API_PROPOGATE_UNCAUGHT_EXCEPTIONS' in current_app.config:
-                if current_app.config['API_PROPOGATE_UNCAUGHT_EXCEPTIONS'] is True:
-                    raise
+            if current_app.config.get('API_PROPOGATE_UNCAUGHT_EXCEPTIONS') == True:
+                raise
             if current_app.config['DEBUG'] is True:
                 raise e
-            if 'PROPOGATE_ERROR' in current_app.config:
-                if current_app.config['PROPOGATE_ERROR'] is True:
-                    exc = JsonApiException({'pointer': ''}, str(e))
+            if current_app.config.get('PROPOGATE_ERROR') == True:
+                exc = JsonApiException({'pointer': ''}, str(e))
             else:
                 exc = JsonApiException({'pointer': ''}, 'Unknown error')
             return make_response(json.dumps(jsonapi_errors([exc.to_dict()])),
@@ -110,7 +108,7 @@ class Resource(MethodView):
             resp = make_response(json.dumps(data), status_code, headers)
 
         # ETag Handling
-        if current_app.config['ETAG'] is True:
+        if current_app.config.get('ETAG') == True:
             etag = hashlib.sha1(resp.get_data()).hexdigest()
             resp.headers['ETag'] = etag
 
@@ -130,7 +128,7 @@ class Resource(MethodView):
                     return make_response(json.dumps(jsonapi_errors([exc.to_dict()])),
                                          exc.status,
                                          headers)
-            return resp
+        return resp
 
 
 class ResourceList(with_metaclass(ResourceMeta, Resource)):
@@ -541,7 +539,7 @@ class ResourceRelationship(with_metaclass(ResourceMeta, Resource)):
         """Get useful data for relationship management
         """
         relationship_field = request.path.split('/')[-1]
-        if current_app.config['DASHERIZE_API'] is True:
+        if current_app.config.get('DASHERIZE_API') == True:
             relationship_field = relationship_field.replace('-', '_')
 
         if relationship_field not in get_relationships(self.schema).values():

@@ -23,6 +23,13 @@ import flask_rest_jsonapi.decorators
 import flask_rest_jsonapi.resource
 import flask_rest_jsonapi.schema
 
+@pytest.fixture(autouse=True)
+def flask_app(monkeypatch):
+    app = type('app', (object,), dict(config=dict(DEBUG=True)))
+    monkeypatch.setattr(flask_rest_jsonapi.data_layers.alchemy, 'current_app', app)
+    monkeypatch.setattr(flask_rest_jsonapi.data_layers.filtering.alchemy, 'current_app', app) # test Node
+    monkeypatch.setattr(flask_rest_jsonapi.querystring, 'current_app', app) # test querystring
+
 
 @pytest.fixture(scope="module")
 def base():
@@ -822,7 +829,7 @@ def test_get_list_invalid_sort(client, register_routes):
 def test_get_detail_object_not_found(client, register_routes):
     with client:
         response = client.get('/persons/3', content_type='application/vnd.api+json')
-        assert response.status_code == 200
+        assert response.status_code == 404
 
 
 def test_post_relationship_related_object_not_found(client, register_routes, person):
@@ -901,7 +908,7 @@ def test_sqlalchemy_data_layer_without_model(session, person_list):
         SqlalchemyDataLayer(dict(session=session, resource=person_list))
 
 
-def test_sqlalchemy_data_layer_create_object_error(session, person_model, person_list):
+def test_sqlalchemy_data_layer_create_object_error(session, person_model, person_list, monkeypatch):
     with pytest.raises(JsonApiException):
         dl = SqlalchemyDataLayer(dict(session=session, model=person_model, resource=person_list))
         dl.create_object(dict(), dict())
