@@ -109,7 +109,7 @@ class Resource(MethodView):
 
         # ETag Handling
         if current_app.config.get('ETAG') == True:
-            etag = hashlib.sha1(resp.get_data()).hexdigest()
+            etag = f'W/"{hashlib.sha1(resp.get_data()).hexdigest()}"'
             resp.headers['ETag'] = etag
 
             if_match = request.headers.get('If-Match')
