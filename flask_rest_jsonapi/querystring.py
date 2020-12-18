@@ -154,13 +154,25 @@ class QueryStringManager(object):
                     field = sort_field[0].replace('-', '') + sort_field[1:].replace('-', '_')
                 else:
                     field = sort_field[0].replace('-', '') + sort_field[1:]
-                if field not in self.schema._declared_fields:
-                    raise InvalidSort("{} has no attribute {}".format(self.schema.__name__, field))
-                if field in get_relationships(self.schema).values():
-                    raise InvalidSort("You can't sort on {} because it is a relationship field".format(field))
-                field = get_model_field(self.schema, field)
+                def check_schema_field(schema, field):
+                    if field not in schema._declared_fields:
+                        raise InvalidSort("{} has no attribute {}".format(schema.__name__, field))
+                    if field in get_relationships(schema).values():
+                        raise InvalidSort("You can't sort on {} because it is a relationship field".format(field))
+                schema = self.schema
+                relation = None
+                if '.' in field:
+                    relation, field = field.split('.')
+                    if relation not in get_relationships(self.schema).values():
+                        raise InvalidSort("{} has no relationship {}".format(self.schema.__name__, relation))
+                    relation_field = self.schema._declared_fields[relation]
+                    relation = get_model_field(self.schema, relation)
+                    schema = relation_field.schema.__class__
+
+                check_schema_field(schema, field)
+                field = get_model_field(schema, field)
                 order = 'desc' if sort_field.startswith('-') else 'asc'
-                sorting_results.append({'field': field, 'order': order})
+                sorting_results.append({'field': field, 'order': order, 'relation': relation})
             return sorting_results
 
         return []
