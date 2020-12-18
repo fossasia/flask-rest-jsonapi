@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from flask import current_app
-from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.collections import InstrumentedList
 from sqlalchemy.inspection import inspect
