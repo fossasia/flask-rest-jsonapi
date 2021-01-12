@@ -19,7 +19,7 @@ def compute_schema(schema_cls, default_kwargs, qs, include):
     """
     # manage include_data parameter of the schema
     schema_kwargs = default_kwargs
-    schema_kwargs['include_data'] = tuple()
+    schema_kwargs['include_data'] = schema_kwargs.get('include_data', tuple())
 
     if include:
         for include_path in include:
@@ -62,6 +62,7 @@ def compute_schema(schema_cls, default_kwargs, qs, include):
             related_schema_kwargs = {}
             if isinstance(related_schema_cls, SchemaABC):
                 related_schema_kwargs['many'] = related_schema_cls.many
+                related_schema_kwargs['include_data'] = related_schema_cls.__dict__.get('include_data')
                 related_schema_cls = related_schema_cls.__class__
             if isinstance(related_schema_cls, str):
                 related_schema_cls = class_registry.get_class(related_schema_cls)
