@@ -4,8 +4,7 @@ import inspect
 import json
 from copy import copy
 from six import with_metaclass
-import pytz
-from datetime import datetime
+from datetime import datetime, timezone
 import hashlib
 
 from werkzeug.wrappers import Response
@@ -325,7 +324,7 @@ class ResourceDetail(with_metaclass(ResourceMeta, Resource)):
         if 'deleted_at' not in self.schema._declared_fields or request.args.get('permanent') == 'true' or current_app.config['SOFT_DELETE'] is False:
             self._data_layer.delete_object(obj, kwargs)
         else:
-            data = {'deleted_at': str(datetime.now(pytz.utc))}
+            data = {'deleted_at': str(datetime.now(timezone.utc))}
             self._data_layer.update_object(obj, data, kwargs)
 
         result = {'meta': {'message': 'Object successfully deleted'}}
