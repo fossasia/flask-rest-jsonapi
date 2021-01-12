@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ fossasia ]
+  pull_request:
+    branches: [ fossasia ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        pip install coveralls coverage pytest
+        python setup.py install
+    - name: Test with pytest
+      run: |
+        coverage run --source flask_rest_jsonapi -m pytest -v
