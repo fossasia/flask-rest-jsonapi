@@ -29,7 +29,7 @@ setup(
     install_requires=['six',
                       'Flask>=0.11',
                       'marshmallow>=2.15.1,<3',
-                      'marshmallow_jsonapi',
+                      'marshmallow_jsonapi==0.23.2',
                       'sqlalchemy'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
