@@ -401,6 +401,7 @@ class SqlalchemyDataLayer(BaseDataLayer):
         :param DeclarativeMeta obj: the sqlalchemy object to plug relationships to
         :return boolean: True if relationship have changed else False
         """
+        relationships_to_apply = []
         relationship_fields = get_relationships(self.resource.schema)
         for key, value in data.items():
             if key in relationship_fields:
@@ -414,14 +415,18 @@ class SqlalchemyDataLayer(BaseDataLayer):
                         related_object = self.get_related_object(related_model, related_id_field, {'id': identifier})
                         related_objects.append(related_object)
 
-                    setattr(obj, key, related_objects)
+                    relationships_to_apply.append({'field': key, 'value': related_objects})
                 else:
                     related_object = None
 
                     if value is not None:
                         related_object = self.get_related_object(related_model, related_id_field, {'id': value})
+                    
+                    relationships_to_apply.append({'field': key, 'value': related_object})
+        
+        for relationship in relationships_to_apply:
+            setattr(obj, relationship['field'], relationship['value'])
 
-                    setattr(obj, key, related_object)
 
     def filter_query(self, query, filter_info, model):
         """Filter query according to jsonapi 1.0
